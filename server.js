@@ -1,14 +1,16 @@
-const express = require('express');
 require('dotenv').config({ path: './config/config.env' });
-const bootcamps = require('./routes/bootcamps');
+const express = require('express');
+const connectDB = require('./config/db');
+
+connectDB();
 
 const app = express();
 
-app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/bootcamps', require('./routes/bootcamps'));
 
 const port = process.env.PORT || 5000;
 
-app.listen(port, () =>
+const server = app.listen(port, () =>
   console.log(
     'server running in ',
     process.env.NODE_ENV,
@@ -16,3 +18,10 @@ app.listen(port, () =>
     port
   )
 );
+
+// handling database connection error
+// stop the server if database is not connected
+process.on('unhandledRejection', (err, promise) => {
+  console.log(`Error: ${err.message}`);
+  server.close(() => process.exit(1));
+});
