@@ -6,6 +6,10 @@ connectDB();
 
 const app = express();
 
+// body parser
+app.use(express.json());
+
+// routes
 app.use('/api/v1/bootcamps', require('./routes/bootcamps'));
 
 const port = process.env.PORT || 5000;
